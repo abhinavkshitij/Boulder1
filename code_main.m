@@ -13,11 +13,10 @@ clims=[-20 20];
 c_Ehit= [0 440];
 
 %% READ VELOCITY FILES:
-run ReadVelocity;
+run ReadVel;
 
 E_DNS = 0.5*(U1_DNS.^2 + U2_DNS.^2 + U3_DNS.^2); % Calculate E
-    
-    
+      
     
    %% Task 1a: u_i in three DNS planes:
    
@@ -28,37 +27,39 @@ E_DNS = 0.5*(U1_DNS.^2 + U2_DNS.^2 + U3_DNS.^2); % Calculate E
     LES = zeros(grid,grid,grid);
     test = zeros(grid,grid,grid);
 
-LES(1:LES_filter+1,1:LES_filter+1,1:LES_filter+1)=1;
-LES(Fs-LES_filter+1:256,1:LES_filter+1,1:LES_filter+1)=1;
-LES(1:LES_filter+1,1:LES_filter+1,Fs-LES_filter+1:256)=1;
-LES(Fs-LES_filter+1:256,1:LES_filter+1,Fs-LES_filter+1:256)=1;
-LES(1:LES_filter+1,Fs-LES_filter+1:256,Fs-LES_filter+1:256)=1;
-LES(Fs-LES_filter+1:256,Fs-LES_filter+1:256,Fs-LES_filter+1:256)=1;
-LES(Fs-LES_filter+1:256,Fs-LES_filter+1:256,1:LES_filter+1)=1;
-LES(1:LES_filter+1,Fs-LES_filter+1:256,1:LES_filter+1)=1;
+% LES(1:LES_filter+1,1:LES_filter+1,1:LES_filter+1)=1;
+% LES(Fs-LES_filter+1:256,1:LES_filter+1,1:LES_filter+1)=1;
+% LES(1:LES_filter+1,1:LES_filter+1,Fs-LES_filter+1:256)=1;
+% LES(Fs-LES_filter+1:256,1:LES_filter+1,Fs-LES_filter+1:256)=1;
+% LES(1:LES_filter+1,Fs-LES_filter+1:256,Fs-LES_filter+1:256)=1;
+% LES(Fs-LES_filter+1:256,Fs-LES_filter+1:256,Fs-LES_filter+1:256)=1;
+% LES(Fs-LES_filter+1:256,Fs-LES_filter+1:256,1:LES_filter+1)=1;
+% LES(1:LES_filter+1,Fs-LES_filter+1:256,1:LES_filter+1)=1;
+% 
+% test(1:Test_filter+1,1:Test_filter+1,1:Test_filter+1)=1;
+% test(Fs-Test_filter+1:256,1:Test_filter+1,1:Test_filter+1)=1;
+% test(1:Test_filter+1,1:Test_filter+1,Fs-Test_filter+1:256)=1;
+% test(Fs-Test_filter+1:256,1:Test_filter+1,Fs-Test_filter+1:256)=1;
+% test(1:Test_filter+1,Fs-Test_filter+1:256,Fs-Test_filter+1:256)=1;
+% test(Fs-Test_filter+1:256,Fs-Test_filter+1:256,Fs-Test_filter+1:256)=1;
+% test(Fs-Test_filter+1:256,Fs-Test_filter+1:256,1:Test_filter+1)=1;
+% test(1:Test_filter+1,Fs-Test_filter+1:256,1:Test_filter+1)=1;
 
-test(1:Test_filter+1,1:Test_filter+1,1:Test_filter+1)=1;
-test(Fs-Test_filter+1:256,1:Test_filter+1,1:Test_filter+1)=1;
-test(1:Test_filter+1,1:Test_filter+1,Fs-Test_filter+1:256)=1;
-test(Fs-Test_filter+1:256,1:Test_filter+1,Fs-Test_filter+1:256)=1;
-test(1:Test_filter+1,Fs-Test_filter+1:256,Fs-Test_filter+1:256)=1;
-test(Fs-Test_filter+1:256,Fs-Test_filter+1:256,Fs-Test_filter+1:256)=1;
-test(Fs-Test_filter+1:256,Fs-Test_filter+1:256,1:Test_filter+1)=1;
-test(1:Test_filter+1,Fs-Test_filter+1:256,1:Test_filter+1)=1;
-% for i=1:grid
-%         for j=1:grid
-%             for k=1:grid
-%                  if (sqrt( (i-0.5*grid)^2 + (j-0.5*grid)^2 + (k-0.5*grid)^2 ) < LES_filter)               
-%                  LES(i,j,k) = 1;
-%                  end
-%                  if (sqrt( (i-0.5*grid)^2 + (j-0.5*grid)^2 + (k-0.5*grid)^2 ) < Test_filter)               
-%                  test(i,j,k) = 1;
-%                 end
-%             end
-%         end
-% end
-%   LES = fftshift(LES);
-%   test = fftshift(test);
+center = 0.5*Fs+1;
+for i=1:grid
+        for j=1:grid
+            for k=1:grid
+                 if (sqrt( (i-center)^2 + (j-center)^2 + (k-center)^2 ) <= LES_filter)               
+                 LES(i,j,k) = 1;
+                 end
+                 if (sqrt( (i-center)^2 + (j-center)^2 + (k-center)^2 ) <= Test_filter)               
+                 test(i,j,k) = 1;
+                end
+            end
+        end
+end
+   LES = fftshift(LES);
+   test = fftshift(test);
   
 %  LES_box = ones(grid,grid,grid);
 %     test_box = ones(grid,grid,grid);
