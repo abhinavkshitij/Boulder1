@@ -5,12 +5,12 @@ close all
 grid = 256; 
 nx=[grid,grid,grid]; 
 
-Fs = 512;                    % Sampling frequency
+Fs = 256;                    % Sampling frequency
 T = 1/Fs;                     % Sample time (period)
 L = 256;                     % Length of signal
 x = (0:L-1)*T;    
 [x,y] = meshgrid(x);
-filter = 20;
+filter = 32;
 
 
 velLoc='/Users/Kshitij/Desktop/ALES/DNS_Data/'; 
@@ -24,7 +24,7 @@ velLoc='/Users/Kshitij/Desktop/ALES/DNS_Data/';
     disp (Uhit(1,1,129));
     
 % Sum of a 50 Hz sinusoid and a 120 Hz sinusoid:
-z = Uhit(:,:,128);
+z = Uhit(:,:,129);
 
 N = 2^nextpow2(L);
 f = Fs/2*linspace(0,1,N/2+1);
@@ -68,7 +68,7 @@ ylabel('y');
 
 for j=1:length(Y)
     for i=1:length(Y)
-        if (sqrt((i-0.5*length(Y))^2+(j-0.5*length(Y))^2) > filter) 
+        if (sqrt((i-(0.5*length(Y)+1))^2+(j-0.5*length(Y)+1)^2) > filter) 
             Y(i,j) = 0;
         end
     end
@@ -84,12 +84,15 @@ axis equal;
 title('Filter at k = 20','interpreter','latex','fontsize',12)
 Y = ifftshift(Y);
 
-subplot(247);
-mesh(log(abs(Y)));
+!subplot(247);
+figure(2)
+!mesh(log(abs(Y)));
+imagesc(log(abs(Y)))
 xlabel('x');
 ylabel('y');
 title('Backward FFT','interpreter','latex','fontsize',12)
 
+figure(1);
 % Plot 2D amplitude spectrum:
 subplot(246);
 loglog(f,2*abs(Y(1:N/2+1)),'marker','none') ;

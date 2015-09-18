@@ -27,20 +27,33 @@ run ReadVel;
     axis square;
     %% Compute Filters - LES and Test filters
      disp('Computing Filters...');
-    LES = zeros(grid,grid,grid);
-
+%     LES = zeros(grid,grid,grid);
+% 
+% center = 0.5*Fs+1;
+% for i=1:grid
+%         for j=1:grid
+%             for k=1:grid
+%                  if (int8(sqrt( (i-center)^2 + (j-center)^2 + (k-center)^2 )) == LES_filter)               
+%                  LES(i,j,k) = 1;
+%                  end     
+%             end
+%         end
+% end
+%    LES = fftshift(LES);
+   %% BOX filter:
+ LES = zeros(grid,grid,grid);
+%% BOX filter:
 center = 0.5*Fs+1;
 for i=1:grid
         for j=1:grid
             for k=1:grid
-                 if (int8(sqrt( (i-center)^2 + (j-center)^2 + (k-center)^2 )) == LES_filter)               
+                 if ((i-center)==LES_filter || (j-center)==LES_filter || (k-center)==LES_filter)               
                  LES(i,j,k) = 1;
                  end     
             end
         end
 end
    LES = fftshift(LES);
- 
     
     %% Compute TAU_LES: 
    U1_LES = sharp_filter(U1_DNS,LES,Fs);

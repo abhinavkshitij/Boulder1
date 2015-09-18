@@ -5,10 +5,10 @@ disp('Computing Filters...');
 for i=1:grid
         for j=1:grid
             for k=1:grid
-                 if (sqrt( (i-0.5*grid)^2 + (j-0.5*grid)^2 + (k-0.5*grid)^2 ) > LES_filter)               
+                 if (sqrt( (double(i)-0.5*grid)^2 + (double(j)-0.5*grid)^2 + (double(k)-0.5*grid)^2 ) > LES_filter)               
                  LES(i,j,k) = 0;
                  end
-                 if (sqrt( (i-0.5*grid)^2 + (j-0.5*grid)^2 + (k-0.5*grid)^2 ) > Test_filter)               
+                 if (sqrt( (double(i)-0.5*grid)^2 + (double(j)-0.5*grid)^2 + (double(k)-0.5*grid)^2 ) > Test_filter)               
                  test(i,j,k) = 0;
                 end
             end

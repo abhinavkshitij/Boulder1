@@ -2,6 +2,7 @@
 figure();
 colormap jet;
 
+
     subplot(231);imagesc(tau_11_test(:,:,vizSlice1),c_tau);
     title('$T_{uu}$','interpreter','latex','fontsize',12);
     h = gca; h.XTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
@@ -33,12 +34,14 @@ colormap jet;
     h.YTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
     axis square;
     
-    subplot(236);imagesc(tau_33_test(:,:,vizSlice1),c_tau);
+    s2=subplot(236);imagesc(tau_33_test(:,:,vizSlice1),c_tau);
     title('$T_{ww}$','interpreter','latex','fontsize',12);
     h=gca;h.XTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
     h.YTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
     axis square;
+   
 
+   
  figure();
  colormap jet;
     subplot(231);imagesc(tau_11_test(:,:,vizSlice2),c_tau);

@@ -1,4 +1,4 @@
-%% Load and manipulate all the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %% Load and manipulate all the data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Loads however many timesteps specified by variable 'times' and puts data
 % into a cell array for each velocity component.  Timesteps are cell array
 % entries in ascending order.

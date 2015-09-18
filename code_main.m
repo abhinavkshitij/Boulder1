@@ -6,10 +6,10 @@ grid = 256;  Fs=256;
 vizSlice1 = 64;
 vizSlice2 = 128;
 vizSlice3 = 192;
-LES_filter = 128;
-Test_filter = 64;
+LES_filter = 16;% dont change this anymore!!!!
+Test_filter = 8;%just doonn't!!
 
-clims=[-20 20];
+clims=[-40 40];
 c_Ehit= [0 440];
 
 %% READ VELOCITY FILES:
@@ -27,32 +27,23 @@ E_DNS = 0.5*(U1_DNS.^2 + U2_DNS.^2 + U3_DNS.^2); % Calculate E
     LES = zeros(grid,grid,grid);
     test = zeros(grid,grid,grid);
 
-% LES(1:LES_filter+1,1:LES_filter+1,1:LES_filter+1)=1;
-% LES(Fs-LES_filter+1:256,1:LES_filter+1,1:LES_filter+1)=1;
-% LES(1:LES_filter+1,1:LES_filter+1,Fs-LES_filter+1:256)=1;
-% LES(Fs-LES_filter+1:256,1:LES_filter+1,Fs-LES_filter+1:256)=1;
-% LES(1:LES_filter+1,Fs-LES_filter+1:256,Fs-LES_filter+1:256)=1;
-% LES(Fs-LES_filter+1:256,Fs-LES_filter+1:256,Fs-LES_filter+1:256)=1;
-% LES(Fs-LES_filter+1:256,Fs-LES_filter+1:256,1:LES_filter+1)=1;
-% LES(1:LES_filter+1,Fs-LES_filter+1:256,1:LES_filter+1)=1;
-% 
-% test(1:Test_filter+1,1:Test_filter+1,1:Test_filter+1)=1;
-% test(Fs-Test_filter+1:256,1:Test_filter+1,1:Test_filter+1)=1;
-% test(1:Test_filter+1,1:Test_filter+1,Fs-Test_filter+1:256)=1;
-% test(Fs-Test_filter+1:256,1:Test_filter+1,Fs-Test_filter+1:256)=1;
-% test(1:Test_filter+1,Fs-Test_filter+1:256,Fs-Test_filter+1:256)=1;
-% test(Fs-Test_filter+1:256,Fs-Test_filter+1:256,Fs-Test_filter+1:256)=1;
-% test(Fs-Test_filter+1:256,Fs-Test_filter+1:256,1:Test_filter+1)=1;
-% test(1:Test_filter+1,Fs-Test_filter+1:256,1:Test_filter+1)=1;
-
 center = 0.5*Fs+1;
+% Box filter:
+%LES(center-LES_filter:center+LES_filter,center-LES_filter:center+LES_filter,center-LES_filter:center+LES_filter)=1;
+%test(center-Test_filter:center+Test_filter,center-Test_filter:center+Test_filter,center-Test_filter:center+Test_filter)=1;
+
+
 for i=1:grid
         for j=1:grid
             for k=1:grid
-                 if (sqrt( (i-center)^2 + (j-center)^2 + (k-center)^2 ) <= LES_filter)               
+                d = sqrt( (i-center)^2 + (j-center)^2 + (k-center)^2 );
+                %d = (i-center)^2 + (j-center)^2 + (k-center)^2;
+                %LES(i,j,k)= exp(-d/(2*LES_filter^2));%gaussian
+                %test(i,j,k)= exp(-d/(2*Test_filter^2));%Gaussian
+                 if (d <= LES_filter)               
                  LES(i,j,k) = 1;
                  end
-                 if (sqrt( (i-center)^2 + (j-center)^2 + (k-center)^2 ) <= Test_filter)               
+                 if (d  <= Test_filter)               
                  test(i,j,k) = 1;
                 end
             end
@@ -61,23 +52,6 @@ end
    LES = fftshift(LES);
    test = fftshift(test);
   
-%  LES_box = ones(grid,grid,grid);
-%     test_box = ones(grid,grid,grid);
-%     
-% for i=1:grid
-%         for j=1:grid
-%             for k=1:grid
-%                  if ( ((i-0.5*grid)>LES_filter) && ((j-0.5*grid) > LES_filter) && ((k-0.5*grid)>LES_filter) )              
-%                  LES_box(i,j,k) = 0;
-%                  end
-%                  if ( ((i-0.5*grid)>Test_filter) && ((j-0.5*grid) > Test_filter) && ((k-0.5*grid)>Test_filter) )             
-%                  test_box(i,j,k) = 0;
-%                 end
-%             end
-%         end
-% end
-%   LES_box = fftshift(LES_box);
-%   test_box = fftshift(test_box);
   %% FORWARD FFT: 
    % Computing FFT for the data:
     

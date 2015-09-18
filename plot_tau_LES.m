@@ -1,6 +1,5 @@
 figure();
 colormap jet;
-
     subplot(231);imagesc(tau_11_LES(:,:,vizSlice1),c_tau);
     title('$\tau_{uu}$','interpreter','latex','fontsize',12);
     h = gca; h.XTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];

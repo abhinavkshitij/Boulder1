@@ -33,7 +33,8 @@ small(10)=(min(min(min(tau_22_test))));
 small(11)=(min(min(min(tau_23_test))));
 small(12)=(min(min(min(tau_33_test))));
 
-largest = max(large);
-smallest = min(small);
+largest = max(large)/2;
+smallest = min(small)/2;
+
 c_tau = [smallest largest]; 
 

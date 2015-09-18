@@ -4,9 +4,10 @@ clear all
 Fs = 256; % Number of sample points : SAMPLING FREQUENCY
 L = Fs;
 x = linspace(0,2*pi(),Fs);
-
+grid =Fs;
 [x,y] = meshgrid(x);
 filter = 15;
+clims = [-4 4];
 
 %% LOAD VELOCITY FIELD:
 
@@ -15,40 +16,40 @@ filter = 15;
 
 %% LOAD SINUSOIDAL TEST FUNCTION:
 
-%z = 2*cos(10*x) + cos(20*y)+ 2*cos(15*x+16*y)+ 0.3; 
-z = 2*cos(10*x) + cos(20*y)+ 0.3; 
-
+%z = 2*cos(10*x) + cos(20*y)+ 2*cos(15*x+16*y)+ 0.25; 
+%z = 2*cos(10*x) + cos(20*y)+ 0.25; 
+z = cos(x) + cos(2*y);
 %%
 % Plot original field:
-figure(1);
+figure(1);colormap jet;
 subplot(231);
 axis square;
-imagesc(z(1:64,1:64));
+imagesc(z(1:Fs/2+1,1:Fs/2+1),clims);xlabel('x');ylabel('y');
+h = gca; h.XTick = [0, 0.25*grid,0.5*grid];
+h.YTick = [0,0.25*grid,0.5*grid];
+
 %imagesc(z);
 
-title('$$2\cos(10x)+cos(20y)+0.3 $$','interpreter','latex','fontsize',12)
-%title('$$\cos(10x)+cos(20y)+2cos(15x+16y)+0.3  $$','interpreter','latex','fontsize',12)% FORWARD FFT on Original Spectrum:
+%title('$$2\cos(10x)+cos(20y)+0.25 $$','interpreter','latex','fontsize',12)
+title('$$\cos(10x)+cos(20y)+2cos(15x+16y)+0.25  $$','interpreter','latex','fontsize',12)% FORWARD FFT on Original Spectrum:
 F_fft = fftn(z)/L^2;
 
 % Mesh plot:
 subplot(232);
-stem(abs(F_fft(1,:)),'marker','none');
-title('Forward FFT','interpreter','latex','fontsize',12);
+stem(abs(F_fft(1,1:Fs/2+1)),'marker','none');
+title('Fwd FFT(magnitude)-kx','interpreter','latex','fontsize',12);
 xlabel('kx');
+h = gca; h.XTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
+h.YTick = [0,0.25,0.5,0.75,1];
 
 
 % Mesh plot:
 subplot(233);
-stem(abs(F_fft(:,1)),'marker','none');
-title('Forward FFT','interpreter','latex','fontsize',12);
+stem(abs(F_fft(1:Fs/2+1,1)),'marker','none');
+title('Fwd FFT(magnitude)-ky','interpreter','latex','fontsize',12);
 xlabel('ky');
-
-% Mesh plot:
-subplot(236);
-mesh(abs(F_fft));
-title('Magnitude - FFT','interpreter','latex','fontsize',12);
-xlabel('kx');
-ylabel('ky');
+h = gca; h.XTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
+h.YTick = [0,0.25,0.5,0.75,1];
 
 % Apply filter:
 
@@ -83,20 +84,35 @@ end
  filtered_fft = LES.*F_fft;
 
 subplot(235);
-mesh(abs(filtered_fft));
+stem(abs(filtered_fft(1,1:Fs/2+1)),'marker','none');
 xlabel('kx');
-ylabel('ky');
 title('Filter at k = 15','interpreter','latex','fontsize',12)
-
+h = gca; h.XTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
+h.YTick = [0,0.25,0.5,0.75,1];
+    
+subplot(236);
+stem(abs(filtered_fft(1:Fs/2+1,1)),'marker','none');
+xlabel('ky');
+title('Filter at k = 15','interpreter','latex','fontsize',12);
+h = gca; h.XTick = [0, 0.25*grid, 0.5*grid, 0.75*grid, grid];
+h.YTick = [0,0.25,0.5,0.75,1];
 
 
 %Take inverse fft
 back_fft = ifftn(filtered_fft)*L^2;
-subplot(234);
+subplot(234);xlabel('x');ylabel('y');
 axis equal;
-imagesc(back_fft(1:64,1:64));
+imagesc(back_fft(1:Fs/2+1,1:Fs/2+1),clims);
 %imagesc(back_fft);
-title('$$\cos{(10x)}$$','interpreter','latex','fontsize',12);
+title('$$2\cos{(10x)+0.25}$$','interpreter','latex','fontsize',12);
+h = gca; h.XTick = [0, 0.25*grid,0.5*grid];
+h.YTick = [0,0.25*grid,0.5*grid];
+
+%% Kx-ky
+figure(2);
+axis square;
+contour(abs(F_fft(1:Fs/8+1,1:Fs/8+1)),[0 0.3]);
+xlabel('kx');ylabel('ky');
 
 
 
