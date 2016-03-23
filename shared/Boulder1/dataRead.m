@@ -174,7 +174,7 @@ elseif strcmp(dat,'nrl')
 elseif strcmp(dat,'jhu256')
     path=   '../../../f90/data/jhu256/bin/';
     nx  =   [256,256,256];                  % grid dimensions
-    lx  =   [0.259,0.259,0.259];            % physical domain size
+    lx  =   [2*pi(),2*pi(),2*pi()];            % physical domain size
     nt  =   1;                              % number of time steps  
     time=   '256';
     var=zeros(3,nx(1),nx(2),nx(3));         % initialize var arrays

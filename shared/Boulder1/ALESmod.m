@@ -3,10 +3,12 @@ function tau = ALESmod(ns,sp,nx,N,var,hij,S,delt,nd)
 nsh =   floor(ns/2);
 M   =   size(var,1)*ns*ns*ns;
 Nc=0;
+%% This formula will have repetitions for all  N > 2. But it works for 1 and 2.
 for n=0:N
     Nc=Nc+nchoosek(M+n-1,n);    
 end
 
+%% If non-dimensionalization is switched off, then set S and delt to 1.
 if (nd==0)
    S=1; 
    delt=1;
@@ -14,8 +16,8 @@ end
 
 % Create nonlinear combination array
 tic
-tau =zeros(nx(1),6,nx(2),nx(3));
-parfor ix=1+sp*nsh:nx(1)-sp*nsh
+tau = zeros(nx(1),6,nx(2),nx(3));
+parfor ix=1+sp*nsh:nx(1)-sp*nsh %There is no skip now. It runs for all the interior points.
     taut=zeros(6,nx(2),nx(3));
     V   =zeros(1,Nc);
     for jx=1+sp*nsh:nx(2)-sp*nsh
@@ -48,6 +50,8 @@ parfor ix=1+sp*nsh:nx(1)-sp*nsh
     tau(ix,:,:,:)=taut;
 end %ix
 tau=permute(tau,[2,1,3,4]);
+disp('tau(1,15,24,10)')
+tau(1,15,24,10)
 toc
 
 end

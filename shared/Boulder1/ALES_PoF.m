@@ -3,13 +3,13 @@ clear all;
 clc;
 
 %% Set parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-dat =   'nrl';                           % data identifier
-fdir=   './run45/';                         % figure directory
-lamm= [   0,0.05, 0.1, 0.5,   1,   5];      % regularization
+dat =   'jhu256';                           % data identifier
+fdir=   './run46/';                         % figure directory
+lamm= [  0.1,0.05, 0.1, 0.5,   1,   5];      % regularization
 nskm= [  10,   8,   8,   8,   8,   8];      % test data space  
 nsm = [   3,   3,   3,   3,   3,   3];      % stencil size
-flm = [  16,  40,  40,  40,  40,  40];      % LES scale
-ftm = [  8,  20,  20,  20,  20,  20];      % test scale
+flm = [  40,  40,  40,  40,  40,  40];      % LES scale
+ftm = [  20,  20,  20,  20,  20,  20];      % test scale
 splm= [   1,   2,   2,   2,   2,   2];      % LES scale stencil spacing
 ndfm= [   0,   0,   0,   0,   0,   0];      % variable nondimensionalization (0=no, 1=yes)
 %nc=length(lamm);
@@ -39,13 +39,13 @@ nbins=250;                                              % number of bins
 pfnt=9;                                                 % tick font size
 lfnt=10;                                                % label font size
 lwid=2;                                                 % default line wid
-cmap='parula';                                          % default colormap
+cmap='jet';                                             % default colormap
 vizSlice1 = 64 ; vizSlice2 = 128 ; vizSlice3 = 192;
 clims = [-20 20];
 %% Energy spectra %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-disp('Calculate energy spectra')
-[Eu,Ev,Ew]=energySpectra(var,nx,nxc);                   % velocity spectra
-Ek=Eu+Ev+Ew;                                            % energy spectrum  
+% disp('Calculate energy spectra')
+% [Eu,Ev,Ew]=energySpectra(var,nx,nxc);                   % velocity spectra
+% Ek=Eu+Ev+Ew;                                            % energy spectrum  
 
 %% Initialize arrays %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('Initialize arrays')
@@ -89,25 +89,29 @@ for ic=1:nc
     %% Testing for correct FFT ops:
     var_fl(1,15,24,10)
     var_ft(1,15,24,10)
-    
+%     
     %% Filter strain rates %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    disp('Calculate filtered strain rates')
-    Sij_fl=Sij3DFaster(var_fl,dx);                      % LES scale strain
-    Sij_ft=Sij3DFaster(var_ft,dx);                      % test scale strain
-    S_fl=zeros(nx(1),nx(2),nx(3));                      % LES strain norm
-    S_ft=zeros(nx(1),nx(2),nx(3));                      % test strain norm
-    for jx=1:3
-        for ix=1:3
-            S_fl=S_fl+squeeze(Sij_fl(ix,jx,:,:,:).* ... % LES strain norm 
-                              Sij_fl(jx,ix,:,:,:));
-            S_ft=S_ft+squeeze(Sij_ft(ix,jx,:,:,:).* ... % test strain norm
-                              Sij_ft(jx,ix,:,:,:));
-        end %ix
-    end %jx
-    S_fl=sqrt(2*S_fl);                                  % adjust LES norm
-    S_ft=sqrt(2*S_ft);                                  % adjust test norm
-    S_flm(ic)=mean(mean(mean(S_fl)));                   % average LES norm
-    S_ftm(ic)=mean(mean(mean(S_ft)));   % average test norm
+%     disp('Calculate filtered strain rates')
+%     Sij_fl=Sij3DFaster(var_fl,dx);                      % LES scale strain
+%     Sij_ft=Sij3DFaster(var_ft,dx);                      % test scale strain
+%     %Check S_ij:
+%     disp('Sij_ft(1,2,1,3,5)')
+%     Sij_ft(1,2,1,3,5)
+%     
+%     S_fl=zeros(nx(1),nx(2),nx(3));                      % LES strain norm
+%     S_ft=zeros(nx(1),nx(2),nx(3));                      % test strain norm
+%     for jx=1:3
+%         for ix=1:3
+%             S_fl=S_fl+squeeze(Sij_fl(ix,jx,:,:,:).* ... % LES strain norm 
+%                               Sij_fl(jx,ix,:,:,:));
+%             S_ft=S_ft+squeeze(Sij_ft(ix,jx,:,:,:).* ... % test strain norm
+%                               Sij_ft(jx,ix,:,:,:));
+%         end %ix
+%     end %jx
+%     S_fl=sqrt(2*S_fl);                                  % adjust LES norm
+%     S_ft=sqrt(2*S_ft);                                  % adjust test norm
+%     S_flm(ic)=mean(mean(mean(S_fl)));                   % average LES norm
+%     S_ftm(ic)=mean(mean(mean(S_ft)));   % average test norm
 
     %% Calculate true SGS stresses %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp('Calculate true deviatoric SGS stresses')
@@ -127,35 +131,36 @@ for ic=1:nc
     tau_ft(6,:,:,:)=squeeze(tau_ft(6,:,:,:))-dev;       % test tau33 deviat
     tau_ftm(ic,:,:,:)=tau_ft(:,:,:,ks);                 % store test slice
     clear dev;
-    % format long;
-%     tau_fl(1,15,24,10)
-%     tau_ft(1,15,24,10)
-%     var(1,15,24,10)
-%     var_fl(1,15,24,10)
-%     var_ft(1,15,24,10)
-%     tau_fl(4,200,156,129)
-%     tau_ft(4,200,156,129)
+    format long;
+     tau_ft(1,15,24,10)
+     tau_fl(1,15,24,10)
+     var(1,15,24,10)
+     var_fl(1,15,24,10)
+     var_ft(1,15,24,10)
+      tau_fl(4,200,156,129)
+      tau_ft(4,200,156,129)
+ 
 %     var(3,200,156,129)
-     var_fl(3,200,156,129)
-     var_ft(3,200,156,129)
+%     var_fl(3,200,156,129)
+%     var_ft(3,200,156,129)
    
     %% Calculate dynamic Smagorinsky stresses %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp('Calculate dynamic Smagorinsky stresses')
-    [tauSmag_fl,tauSmag_ft]=dynSmag(var_fl,var_ft,filtt,deltl,deltt,...
-                                    Sij_fl,Sij_ft,S_fl,S_ft,nx);
-    tauSmag_flm(ic,:,:,:)=tauSmag_fl(:,:,:,ks);         % store LES slice
-    tauSmag_ftm(ic,:,:,:)=tauSmag_ft(:,:,:,ks);         % store test slice
+%     [tauSmag_fl,tauSmag_ft]=dynSmag(var_fl,var_ft,filtt,deltl,deltt,...
+%                                     Sij_fl,Sij_ft,S_fl,S_ft,nx);
+%     tauSmag_flm(ic,:,:,:)=tauSmag_fl(:,:,:,ks);         % store LES slice
+%     tauSmag_ftm(ic,:,:,:)=tauSmag_ft(:,:,:,ks);         % store test slice
     
     %% ALES opt Tikhonov Regularization %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     % ALES N=1
     disp('Optimize 1st order ALES coefficients at test and LES scales')
     N=1;
-    h_ftn1=ALESoptTik(lam,ns,spt,nx,nsk,N,var_ft,tau_ft,S_ftm(ic),deltt,ndf);
-    tauOpt_ftn1=ALESmod(ns,spt,nx,N,var_ft,h_ftn1,S_ftm(ic),deltt,ndf); 
-    tauEst_fln1=ALESmod(ns,spl,nx,N,var_fl,h_ftn1,S_flm(ic),deltl,ndf);   
-    h_ftn1m(ic,:,:)=h_ftn1;
-    tauOpt_ftn1m(ic,:,:,:)=tauOpt_ftn1(:,:,:,ks);   
-    tauEst_fln1m(ic,:,:,:)=tauEst_fln1(:,:,:,ks); 
+%     h_ftn1=ALESoptTik(lam,ns,spt,nx,nsk,N,var_ft,tau_ft,S_ftm(ic),deltt,ndf);
+%     tauOpt_ftn1=ALESmod(ns,spt,nx,N,var_ft,h_ftn1,S_ftm(ic),deltt,ndf); 
+%     tauEst_fln1=ALESmod(ns,spl,nx,N,var_fl,h_ftn1,S_flm(ic),deltl,ndf);   
+%     h_ftn1m(ic,:,:)=h_ftn1;
+%     tauOpt_ftn1m(ic,:,:,:)=tauOpt_ftn1(:,:,:,ks);   
+%     tauEst_fln1m(ic,:,:,:)=tauEst_fln1(:,:,:,ks); 
     % ALES N=2
     disp('Optimize 2nd order ALES coefficients at test and LES scales')
     N=2;
@@ -165,7 +170,7 @@ for ic=1:nc
     h_ftn2m(ic,:,:)=h_ftn2;
     tauOpt_ftn2m(ic,:,:,:)=tauOpt_ftn2(:,:,:,ks);
     tauEst_fln2m(ic,:,:,:)=tauEst_fln2(:,:,:,ks); 
-    
+   
     %% Calculate fluxes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     disp('Calculate SGS fluxes at test and LES scales')
     % true SGS fluxes
