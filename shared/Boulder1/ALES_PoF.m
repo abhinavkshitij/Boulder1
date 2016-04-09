@@ -4,7 +4,7 @@ clc;
 
 %% Set parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dat =   'jhu256';                           % data identifier
-fdir=   './run46/';                         % figure directory
+fdir=   './run47/';                         % figure directory
 lamm= [  0.1,0.05, 0.1, 0.5,   1,   5];      % regularization
 nskm= [  10,   8,   8,   8,   8,   8];      % test data space  
 nsm = [   3,   3,   3,   3,   3,   3];      % stencil size
@@ -91,27 +91,27 @@ for ic=1:nc
     var_ft(1,15,24,10)
 %     
     %% Filter strain rates %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     disp('Calculate filtered strain rates')
-%     Sij_fl=Sij3DFaster(var_fl,dx);                      % LES scale strain
-%     Sij_ft=Sij3DFaster(var_ft,dx);                      % test scale strain
-%     %Check S_ij:
-%     disp('Sij_ft(1,2,1,3,5)')
-%     Sij_ft(1,2,1,3,5)
-%     
-%     S_fl=zeros(nx(1),nx(2),nx(3));                      % LES strain norm
-%     S_ft=zeros(nx(1),nx(2),nx(3));                      % test strain norm
-%     for jx=1:3
-%         for ix=1:3
-%             S_fl=S_fl+squeeze(Sij_fl(ix,jx,:,:,:).* ... % LES strain norm 
-%                               Sij_fl(jx,ix,:,:,:));
-%             S_ft=S_ft+squeeze(Sij_ft(ix,jx,:,:,:).* ... % test strain norm
-%                               Sij_ft(jx,ix,:,:,:));
-%         end %ix
-%     end %jx
-%     S_fl=sqrt(2*S_fl);                                  % adjust LES norm
-%     S_ft=sqrt(2*S_ft);                                  % adjust test norm
-%     S_flm(ic)=mean(mean(mean(S_fl)));                   % average LES norm
-%     S_ftm(ic)=mean(mean(mean(S_ft)));   % average test norm
+    disp('Calculate filtered strain rates')
+    Sij_fl=Sij3DFaster(var_fl,dx);                      % LES scale strain
+    Sij_ft=Sij3DFaster(var_ft,dx);                      % test scale strain
+    %Check S_ij:
+    disp('Sij_ft(1,2,1,3,5)')
+    Sij_ft(1,2,1,3,5)
+    
+    S_fl=zeros(nx(1),nx(2),nx(3));                      % LES strain norm
+    S_ft=zeros(nx(1),nx(2),nx(3));                      % test strain norm
+    for jx=1:3
+        for ix=1:3
+            S_fl=S_fl+squeeze(Sij_fl(ix,jx,:,:,:).* ... % LES strain norm 
+                              Sij_fl(jx,ix,:,:,:));
+            S_ft=S_ft+squeeze(Sij_ft(ix,jx,:,:,:).* ... % test strain norm
+                              Sij_ft(jx,ix,:,:,:));
+        end %ix
+    end %jx
+    S_fl=sqrt(2*S_fl);                                  % adjust LES norm
+    S_ft=sqrt(2*S_ft);                                  % adjust test norm
+    S_flm(ic)=mean(mean(mean(S_fl)));                   % average LES norm
+    S_ftm(ic)=mean(mean(mean(S_ft)));   % average test norm
 
     %% Calculate true SGS stresses %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     disp('Calculate true deviatoric SGS stresses')
